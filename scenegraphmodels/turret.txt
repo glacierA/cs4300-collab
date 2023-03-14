@@ -1,0 +1,58 @@
+instance sphere models/sphere.obj
+instance box models/box.obj
+instance cylinder models/cylinder.obj
+instance cone models/cone.obj
+
+material roof-mat
+ambient 0 .4 0
+end-material
+
+material tower-mat
+ambient .8 .8 .8
+end-material
+
+group turret turret
+assign-root turret
+
+#scenegraph: turret
+
+scale scaletower scaletower 10 50 10 
+add-child scaletower turret
+
+leaf tower tower instanceof cylinder
+assign-material tower tower-mat
+add-child tower scaletower
+
+#scenegraph: 
+# turret 
+#   - scaletower
+#       - tower        
+
+translate translate-roof translate-roof 0 46 0
+add-child translate-roof turret
+
+group roof roof 
+add-child roof translate-roof
+
+#scenegraph: 
+# turret 
+#   - scaletower
+#       - tower  
+#   - translate-roof
+#       - roof     
+
+scale scaleroof scaleroof 15 15 15
+add-child scaleroof roof
+
+leaf roofcone roofcone instanceof cone
+assign-material roofcone roof-mat
+add-child roofcone scaleroof
+
+#scenegraph: 
+# turret 
+#   - scaletower
+#       - tower  
+#   - translate-roof
+#       - roof 
+#           - scaleroof
+#               - roofcone 
