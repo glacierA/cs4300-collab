@@ -57,7 +57,7 @@ void Controller::run()
     view.init(this, meshes);
 
     // Define camera variables
-    glm::vec3 cameraPos = glm::vec3(30.0f, 10.0f, 150.0f);
+    glm::vec3 cameraPos = glm::vec3(30.0f, 5.0f, 75.0f);
     glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
     glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
@@ -68,7 +68,10 @@ void Controller::run()
     float farPlane = 100.0f;
 
     // first person variables
-    float cameraSpeed = 0.5f;
+    float cameraSpeed = 2.0f;
+    float sensitivity = 1.0f;
+    float pitch = 0.0f;
+    float yaw = -90.0f;
 
     // camera mode
     int cameraMode = 0;
@@ -84,6 +87,7 @@ void Controller::run()
         mouseX = xpos;
         mouseY = ypos;
         shouldMove = 1; });
+
         // If a cursor input has been entered, rotate the scene accordingly
         if (shouldMove == 1)
         {
@@ -95,34 +99,75 @@ void Controller::run()
         // Key handler
         glfwSetKeyCallback(view.window, [](GLFWwindow *window, int key, int scancode, int action, int mods)
                            {
-        if (key == GLFW_KEY_R){ KeyPress = 1;} 
-        else if (key == GLFW_KEY_W){KeyPress = 2;} 
-        else if (key == GLFW_KEY_0) {KeyPress = 3;}
-        else if (key == GLFW_KEY_1) {KeyPress = 4;} });
+        if (key == GLFW_KEY_R){ KeyPress = GLFW_KEY_R;} 
+        else if (key == GLFW_KEY_EQUAL){KeyPress = GLFW_KEY_EQUAL;} 
+        else if (key == GLFW_KEY_MINUS){KeyPress = GLFW_KEY_MINUS;} 
+        else if (key == GLFW_KEY_0) {KeyPress = GLFW_KEY_0;}
+        else if (key == GLFW_KEY_1) {KeyPress = GLFW_KEY_1;}
+        else if (key == GLFW_KEY_UP){KeyPress = GLFW_KEY_UP;}
+        else if (key == GLFW_KEY_DOWN){KeyPress = GLFW_KEY_DOWN;}
+        else if (key == GLFW_KEY_LEFT){KeyPress = GLFW_KEY_LEFT;}
+        else if (key == GLFW_KEY_RIGHT){KeyPress = GLFW_KEY_RIGHT;} });
 
         // If R is pressed, reset
-        if (KeyPress == 1)
+        if (KeyPress == GLFW_KEY_R)
         {
-            view.xrotate = 0;
-            view.yrotate = 0;
+            cameraPos = glm::vec3(30.0f, 10.0f, 50.0f);
+            pitch = 0.0f;
+            yaw = -90.0f;
             KeyPress = -1;
         }
-        else if (KeyPress == 2)
+        else if (KeyPress == GLFW_KEY_EQUAL)
         {
             cameraPos += cameraSpeed * cameraFront;
             KeyPress = -1;
         }
-        else if (KeyPress == 3)
+        else if (KeyPress == GLFW_KEY_MINUS)
+        {
+            cameraPos -= cameraSpeed * cameraFront;
+            KeyPress = -1;
+        }
+        else if (KeyPress == GLFW_KEY_0) // change camera to global
         {
             cameraMode = 0;
             KeyPress = -1;
         }
-        else if (KeyPress == 4)
+        else if (KeyPress == GLFW_KEY_1) // change camera to first person
         {
             cameraMode = 1;
             KeyPress = -1;
         }
+        else if (KeyPress == GLFW_KEY_UP) // change camera to first person
+        {
+            pitch = pitch + sensitivity;
+            KeyPress = -1;
+        }
+        else if (KeyPress == GLFW_KEY_DOWN) // change camera to first person
+        {
+            pitch = pitch - sensitivity;
+            KeyPress = -1;
+        }
+        else if (KeyPress == GLFW_KEY_LEFT) // change camera to first person
+        {
+            yaw = yaw - sensitivity;
+            KeyPress = -1;
+        }
+        else if (KeyPress == GLFW_KEY_RIGHT) // change camera to first person
+        {
+            yaw = yaw + sensitivity;
+            KeyPress = -1;
+        }
 
+        cout << cameraFront.x << " " << cameraFront.y << " " << cameraFront.z << endl;
+        cout << pitch << " " << yaw << endl;
+
+        cameraFront = glm::normalize(glm::vec3(
+            cos(glm::radians(yaw)) * cos(glm::radians(pitch)),
+            sin(glm::radians(pitch)),
+            sin(glm::radians(yaw)) * cos(glm::radians(pitch))));
+        cout << cameraFront.x << " " << cameraFront.y << " " << cameraFront.z << endl;
+        cout << pitch << " " << yaw << endl;
+        // change camera mode
         if (cameraMode == 0)
         {
             view.display(scenegraph);
