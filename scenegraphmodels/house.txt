@@ -1,0 +1,43 @@
+instance box models/box.obj
+
+material house-material
+ambient .5 .1 .1
+end-material
+
+material door-material
+ambient 1 1 1
+end-material
+
+group house house
+
+
+#building base
+
+translate t-building t-building 0 0 0
+add-child t-building house
+
+scale s-building s-building 50 35 50
+add-child s-building t-building
+
+leaf box-1 box-1 instanceof box
+add-child box-1 s-building
+
+assign-material box-1 house-material 
+
+
+
+#door
+
+translate t-door t-door 0 -5 25
+add-child t-door house
+
+scale s-door s-door 10 20 5
+add-child s-door t-door
+
+
+leaf box-2 box-2 instanceof box
+add-child box-2 s-door
+
+assign-material box-2 door-material 
+
+assign-root house

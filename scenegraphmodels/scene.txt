@@ -1,0 +1,204 @@
+instance vase models/vase-nathan-gregg.obj
+
+
+group scene scene
+
+
+material base-mat
+ambient .4 .4 .4
+end-material
+
+material object-mat
+ambient 1 .7 .7
+end-material
+
+
+#one human, 80 inches tall
+
+# Main House
+#translate item
+translate t-house t-house -30 0 0
+add-child t-house scene
+
+#scale item (Look into if we have to make everything scale like humanoid)
+scale s-house s-house 1 1 1
+add-child s-house t-house
+
+# import and add item
+import house scenegraphmodels/house.txt
+add-child house s-house
+
+# Side house
+#translate item
+translate t-house-side t-house-side 10 -5 0
+add-child t-house-side scene
+
+#scale item (Look into if we have to make everything scale like humanoid)
+scale s-house-side s-house-side .8 .75 .5
+add-child s-house-side t-house-side
+
+# import and add item
+import sidehouse scenegraphmodels/house2.txt
+add-child sidehouse s-house-side
+
+
+#base rectangle
+
+translate t-base t-base -15 -19 -15
+add-child t-base scene
+
+scale s-base s-base 225 4 225
+add-child s-base t-base
+
+#import human-2 scenegraphmodels/box.txt
+
+leaf base base instanceof box
+assign-material base base-mat
+
+add-child base s-base
+
+###############################
+# turrets
+
+# Turret #1 (Front right)
+# translate item (House is 50 35 50), centered at -30 
+translate t-turret-1 t-turret-1 -5 -20 25
+add-child t-turret-1 scene
+
+#scale item 
+scale s-turret-1 s-turret-1 1 1 1
+add-child s-turret-1 t-turret-1
+
+# import and add item
+import turret-1 scenegraphmodels/turret.txt
+add-child turret-1 s-turret-1
+
+# Turret 2 (Front Left)
+
+# translate item (House is 50 35 50), centered at -30 
+translate t-turret-2 t-turret-2 -55 -20 25
+add-child t-turret-2 scene
+
+#scale item 
+scale s-turret-2 s-turret-2 1 1 1
+add-child s-turret-2 t-turret-2
+
+# import and add item
+import turret-2 scenegraphmodels/turret.txt
+add-child turret-2 s-turret-2
+
+# Turret 3 (back Left)
+
+# translate item (House is 50 35 50), centered at -30 
+translate t-turret-3 t-turret-3 -55 -20 -25
+add-child t-turret-3 scene
+
+#scale item 
+scale s-turret-3 s-turret-3 1 1 1
+add-child s-turret-3 t-turret-3
+
+# import and add item
+import turret-3 scenegraphmodels/turret.txt
+add-child turret-3 s-turret-3
+
+# Turret 4 (back right)
+
+# translate item (House is 50 35 50), centered at -30 
+translate t-turret-4 t-turret-4 -5 -20 -25
+add-child t-turret-4 scene
+
+#scale item 
+scale s-turret-4 s-turret-3 1 1 1
+add-child s-turret-4 t-turret-4
+
+# import and add item
+import turret-4 scenegraphmodels/turret.txt
+add-child turret-4 s-turret-4
+
+#######################
+# People 
+
+#translate item
+translate t-person-1 t-person-1 50 -24 5
+add-child t-person-1 scene
+
+#scale item (Look into if we have to make everything scale like humanoid)
+scale s-person-1 s-person-1 .4 .4 .4
+add-child s-person-1 t-person-1
+
+# import and add item
+import person-1 scenegraphmodels/humanpose1.txt
+add-child person-1 s-person-1
+
+
+#######################
+#translate item
+translate t-person-2 t-person-2 -20 -18 60
+add-child t-person-2 scene
+
+#scale item (Look into if we have to make everything scale like humanoid)
+scale s-person-2 s-person-2 30 30 30
+add-child s-person-2 t-person-2
+
+#rotate item
+rotate r-person-2 r-person-2 -35 1 0 0
+add-child r-person-2 s-person-2
+
+# import and add item
+import person-2 scenegraphmodels/sprinter.txt
+add-child person-2 r-person-2
+
+#######################
+#translate item
+translate t-object t-object 50 -14 20
+add-child t-object scene
+
+#scale item (Look into if we have to make everything scale like humanoid)
+scale s-object s-object 1 2 1
+add-child s-object t-object
+
+# import and add item
+leaf object object instanceof vase
+assign-material object object-mat
+add-child object s-object
+
+
+########################
+# building1
+
+#translate item
+translate t-tower t-tower -115 -18 -115
+add-child t-tower scene
+
+#scale item 
+scale s-tower s-tower .5 .5 .5
+add-child s-tower t-tower
+
+# import and add item
+import tower scenegraphmodels/building1.txt
+add-child tower s-tower
+
+########################
+# building2
+
+#translate item
+translate t-tower2 t-tower2 30 -18 -90
+add-child t-tower2 scene
+
+#scale item 
+scale s-tower2 s-tower2 .5 .5 .5
+add-child s-tower2 t-tower2
+
+# import and add item
+import tower2 scenegraphmodels/building2.txt
+add-child tower2 s-tower2
+
+########################
+
+# rotate scene 
+rotate scene-rotate scene-rotate 0 0 1 0 
+add-child scene scene-rotate
+
+#to enforce above rotate, make root scene-rotate
+
+assign-root scene

@@ -1,0 +1,15 @@
+group scene scene
+
+#translate item
+translate t-tower t-tower 0 0 0
+add-child t-tower scene
+
+#scale item 
+scale s-tower s-tower .5 .5 .5
+add-child s-tower t-tower
+
+# import and add item
+import tower scenegraphmodels/building2raw.txt
+add-child tower s-tower
+
+assign-root scene
