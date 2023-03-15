@@ -24,7 +24,7 @@ public:
     View();
     ~View();
     void init(Callbacks *callbacks, map<string, util::PolygonMesh<VertexAttrib>> &meshes);
-    void display(sgraph::IScenegraph *scenegraph);
+    void display(sgraph::IScenegraph *scenegraph, glm::vec3 cameraPos, glm::vec3 cameraFront, glm::vec3 cameraUp);
     void displayFirstPerson(sgraph::IScenegraph *scenegraph, glm::vec3 cameraPos, glm::vec3 cameraFront, glm::vec3 cameraUp);
     bool shouldWindowClose();
     void closeWindow();

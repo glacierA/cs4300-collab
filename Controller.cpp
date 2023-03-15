@@ -158,19 +158,14 @@ void Controller::run()
             KeyPress = -1;
         }
 
-        cout << cameraFront.x << " " << cameraFront.y << " " << cameraFront.z << endl;
-        cout << pitch << " " << yaw << endl;
-
         cameraFront = glm::normalize(glm::vec3(
             cos(glm::radians(yaw)) * cos(glm::radians(pitch)),
             sin(glm::radians(pitch)),
             sin(glm::radians(yaw)) * cos(glm::radians(pitch))));
-        cout << cameraFront.x << " " << cameraFront.y << " " << cameraFront.z << endl;
-        cout << pitch << " " << yaw << endl;
         // change camera mode
         if (cameraMode == 0)
         {
-            view.display(scenegraph);
+            view.display(scenegraph, cameraPos, cameraFront, cameraUp);
         }
         else if (cameraMode == 1)
         {

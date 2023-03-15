@@ -97,7 +97,79 @@ void View::init(Callbacks *callbacks, map<string, util::PolygonMesh<VertexAttrib
     renderer = new sgraph::GLScenegraphRenderer(modelview, objects, shaderLocations);
 }
 
-void View::display(sgraph::IScenegraph *scenegraph)
+void drawCamera(glm::vec3 cameraPos, glm::vec3 cameraFront, glm::vec3 cameraUp)
+{
+
+    float fov = 45.0f;
+    float aspectRatio = 800.0f / 600.0f;
+    float nearPlane = 0.1f;
+    float farPlane = 100.0f;
+    // Draw the camera
+    glm::vec3 cameraRight = glm::normalize(glm::cross(cameraFront, cameraUp));
+
+    // Calculate the width and height of the near plane based on the field of view and aspect ratio
+    float nearHeight = 2 * tan(glm::radians(fov / 2)) * nearPlane;
+    float nearWidth = nearHeight * aspectRatio;
+
+    // Calculate the width and height of the far plane based on the same formula
+    float farHeight = 2 * tan(glm::radians(fov / 2)) * farPlane;
+    float farWidth = farHeight * aspectRatio;
+
+    // Calculate the corners of the near and far planes
+    glm::vec3 nearCenter = cameraPos + cameraFront * nearPlane;
+    glm::vec3 farCenter = cameraPos + cameraFront * farPlane;
+    glm::vec3 nearTopLeft = nearCenter + (cameraUp * (nearHeight / 2)) - (cameraRight * (nearWidth / 2));
+    glm::vec3 nearTopRight = nearCenter + (cameraUp * (nearHeight / 2)) + (cameraRight * (nearWidth / 2));
+    glm::vec3 nearBottomLeft = nearCenter - (cameraUp * (nearHeight / 2)) - (cameraRight * (nearWidth / 2));
+    glm::vec3 nearBottomRight = nearCenter - (cameraUp * (nearHeight / 2)) + (cameraRight * (nearWidth / 2));
+    glm::vec3 farTopLeft = farCenter + (cameraUp * (farHeight / 2)) - (cameraRight * (farWidth / 2));
+    glm::vec3 farTopRight = farCenter + (cameraUp * (farHeight / 2)) + (cameraRight * (farWidth / 2));
+    glm::vec3 farBottomLeft = farCenter - (cameraUp * (farHeight / 2)) - (cameraRight * (farWidth / 2));
+    glm::vec3 farBottomRight = farCenter - (cameraUp * (farHeight / 2)) + (cameraRight * (farWidth / 2));
+
+    // Define the vertices of the frustum wireframe mesh
+    std::vector<glm::vec3> vertices = {
+        // Near plane
+        nearTopLeft, nearTopRight, nearTopRight, nearBottomRight,
+        nearBottomRight, nearBottomLeft, nearBottomLeft, nearTopLeft,
+        // Far plane
+        farTopLeft, farTopRight, farTopRight, farBottomRight,
+        farBottomRight, farBottomLeft, farBottomLeft, farTopLeft,
+        // Lines connecting near and far planes
+        nearTopLeft, farTopLeft, nearTopRight, farTopRight,
+        nearBottomRight, farBottomRight, nearBottomLeft, farBottomLeft};
+
+    // Create a vertex buffer object (VBO) to store the vertices
+    GLuint vbo;
+    glGenBuffers(1, &vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
+
+    // Create a vertex array object (VAO) and bind it
+    GLuint vao;
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
+
+    // Bind the VBO to the VAO and set up the vertex attributes
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), 0);
+
+    // Unbind the VBO and VAO
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+
+    // Draw the frustum wireframe mesh
+    glBindVertexArray(vao);
+    glLineWidth(1.0f); // Set the line width to 1 pixel
+    glDrawArrays(GL_LINES, 0, vertices.size());
+
+    // Delete the VBO and VAO
+    glDeleteBuffers(1, &vbo);
+    glDeleteVertexArrays(1, &vao);
+}
+
+void View::display(sgraph::IScenegraph *scenegraph, glm::vec3 cameraPos, glm::vec3 cameraFront, glm::vec3 cameraUp)
 {
 
     program.enable();
@@ -124,6 +196,7 @@ void View::display(sgraph::IScenegraph *scenegraph)
 
     // Draw scene graph
     scenegraph->getRoot()->accept(renderer);
+    drawCamera(cameraPos, cameraFront, cameraUp);
     modelview.pop();
 
     modelview.pop();
@@ -144,6 +217,10 @@ void View::display(sgraph::IScenegraph *scenegraph)
 
 void View::displayFirstPerson(sgraph::IScenegraph *scenegraph, glm::vec3 cameraPos, glm::vec3 cameraFront, glm::vec3 cameraUp)
 {
+    float fov = 45.0f;
+    float aspectRatio = 800.0f / 600.0f;
+    float nearPlane = 0.1f;
+    float farPlane = 100.0f;
     program.enable();
     glClearColor(0, 0, 0, 1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -163,6 +240,7 @@ void View::displayFirstPerson(sgraph::IScenegraph *scenegraph, glm::vec3 cameraP
 
     // Draw scene graph
     scenegraph->getRoot()->accept(renderer);
+    drawCamera(cameraPos, cameraFront, cameraUp);
     modelview.pop();
 
     modelview.pop();
